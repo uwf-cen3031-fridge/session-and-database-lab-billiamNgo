@@ -28,13 +28,16 @@ export class AppController {
 
     // PROTECT THE HOMEPAGE
 
-    this.router.use((req: any, res: Response, next) => {
+    const enforceLogin = (req: any, res: Response, next: any) => {
       if (req.session.user) {
         next();
       } else {
         res.redirect("/login");
       }
-    });
+    };
+
+    //Security middleware
+    this.router.use(enforceLogin);
 
     // Serve the home page
     this.router.get("/", (req: any, res: Response) => {
