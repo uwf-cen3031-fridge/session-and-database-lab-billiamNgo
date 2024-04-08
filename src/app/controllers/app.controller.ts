@@ -6,19 +6,13 @@ export class AppController {
   public router: Router = Router();
   private log: pino.Logger = pino();
 
-  constructor() {
+  constructor(private userService: UserService) {
     this.initializeRouter();
   }
 
   private initializeRouter() {
-
     this.router.get("/login", (req: Request, res: Response) => {
       res.render("login");
-    });
-
-    this.router.post("/login", (req: any, res: Response) => {
-      req.session.user = req.body.username;
-      res.redirect("/");
     });
 
     this.router.get("/logout", (req: any, res: Response) => {
@@ -37,13 +31,26 @@ export class AppController {
       res.redirect("/");
     });
 
+    // Handle login form submissions
+    this.router.post("/processLogin", async (req: any, res) => {
+      const user = await this.userService.authenticateUser(req.body.username, req.body.password);
+      if (user) {
+        req.session.user = user;
+        res.redirect("/");
+      } else {
+        res.status(401).send("Invalid username or password");
+      }
+    });
+
     // PROTECT THE HOMEPAGE
 
     const enforceLogin = (req: any, res: Response, next: any) => {
       if (req.session.user) {
         next();
       } else {
-        res.redirect("/login");
+        res.render("login", {
+          error: "You need to log in first",
+        });
       }
     };
 
