@@ -28,7 +28,7 @@ class App {
 
     // Init the middlware and controllers
     this.errorMiddleware = new ErrorMiddleware();
-    this.appController = new AppController();
+    this.appController = new AppController(this.userService);
 
     // Serve all static resources from the public directory
     this.app.use(express.static(__dirname + "/public"));

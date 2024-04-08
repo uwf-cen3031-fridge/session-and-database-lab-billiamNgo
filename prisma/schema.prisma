@@ -16,9 +16,3 @@ model User {
   email String @unique
   password String
 }
-
-//THINGS TO UPDATE
-app.ts 
-app.controler.ts
-signup.hbs
-services/ user.service.ts
