@@ -26,6 +26,15 @@ export class AppController {
       });
     });
 
+    this.router.get("/signup", (req: Request, res: Response) => {
+      res.render("signup");
+    });
+
+    this.router.post("/signup", (req: any, res: Response) => {
+      req.session.user = req.body.username;
+      res.redirect("/");
+    });
+    
     // PROTECT THE HOMEPAGE
 
     const enforceLogin = (req: any, res: Response, next: any) => {
