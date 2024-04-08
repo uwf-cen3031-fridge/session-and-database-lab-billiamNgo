@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { pino } from 'pino';
+import { UserService } from "../services/user.service";
 
 export class AppController {
   public router: Router = Router();
@@ -30,11 +31,12 @@ export class AppController {
       res.render("signup");
     });
 
-    this.router.post("/signup", (req: any, res: Response) => {
-      req.session.user = req.body.username;
+    this.router.post("/signup", async (req: any, res) => {
+      const user = await this.userService.createUser(req.body.username, req.body.email, req.body.password);
+      req.session.user = user;
       res.redirect("/");
     });
-    
+
     // PROTECT THE HOMEPAGE
 
     const enforceLogin = (req: any, res: Response, next: any) => {

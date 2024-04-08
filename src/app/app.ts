@@ -7,6 +7,7 @@ import { pino } from 'pino';
 import { AppController } from "./controllers/app.controller";
 import { ErrorMiddleware } from "./middleware/error.middleware";
 import { HandlebarsMiddleware } from "./middleware/handlebars.middleware";
+import { UserService } from "./services/user.service";
 
 class App {
   // Create an instance of express, called "app"
@@ -17,9 +18,13 @@ class App {
   // Middleware and controller instances
   private errorMiddleware: ErrorMiddleware;
   private appController: AppController;
+  private userService: UserService;
 
   constructor(port: number) {
     this.port = port;
+
+    // Create a new instance of user service
+    this.userService = new UserService();
 
     // Init the middlware and controllers
     this.errorMiddleware = new ErrorMiddleware();
@@ -29,7 +34,8 @@ class App {
     this.app.use(express.static(__dirname + "/public"));
 
     // Allow express to decode POST submissions
-    this.app.use(express.urlencoded());
+    // POST message bodies
+    this.app.use(express.urlencoded({ extended: true }));
 
     // My secret secure cookie
     const COOKIE_SECRET = "keyboard cat";
